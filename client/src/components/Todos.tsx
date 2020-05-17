@@ -122,6 +122,7 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
       <Grid.Row>
         <Grid.Column width={16}>
           <Input
+            className="buttonTest"
             action={{
               color: 'teal',
               labelPosition: 'left',
@@ -162,7 +163,7 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
 
   renderTodosList() {
     return (
-      <Grid padded>
+      <Grid className="gridTest" padded>
         {this.state.todos.map((todo, pos) => {
           return (
             <Grid.Row key={todo.todoId}>
@@ -190,6 +191,7 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
               <Grid.Column width={1} floated="right">
                 <Button
                   icon
+                  className="deleteTest"
                   color="red"
                   onClick={() => this.onTodoDelete(todo.todoId)}
                 >
