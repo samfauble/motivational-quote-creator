@@ -1,0 +1,33 @@
+{
+    "documentation": {
+        "version": "v1",
+        "title": "Request Validation Models",
+        "description": "Describes request validation models for app",
+        "models":{
+            "CreateTodoRequests":{
+                "name": "CreateTodoRequests",
+                "contentType": "application/json",
+                "schema": {
+                    "required": ["name", "dueDate"],
+                    "properties": {
+                        "name": {"type": "string"},
+                        "dueDate": {"type": "string"}
+                    }
+                }
+            },
+            "UpdateTodoRequests":{
+                "name": "UpdateTodoRequests",
+                "contentType": "application/json",
+                "schema": {
+                    "required": ["name", "dueDate", "done"],
+                    "properties": {
+                        "name": {"type": "string"},
+                        "dueDate": {"type": "string"},
+                        "done": {"type": "boolean"}
+                    }
+                }
+            }
+        }
+    }
+}
+
