@@ -56,7 +56,10 @@ export default class App extends Component<AppProps, AppState> {
   generateMenu() {
     return (
       <Menu>
-        <Menu.Item name="home">
+        <Menu.Item 
+          name="quotesDashboard"
+          color="violet"
+          >
           <Link to="/">Quotes Dashboard</Link>
         </Menu.Item>
 
@@ -68,13 +71,21 @@ export default class App extends Component<AppProps, AppState> {
   logInLogOutButton() {
     if (this.props.auth.isAuthenticated()) {
       return (
-        <Menu.Item name="logout" onClick={this.handleLogout}>
+        <Menu.Item 
+          name="logout" 
+          color="blue"
+          onClick={this.handleLogout}
+        >
           Sign Out
         </Menu.Item>
       )
     } else {
       return (
-        <Menu.Item name="login" onClick={this.handleLogin}>
+        <Menu.Item 
+          name="login" 
+          onClick={this.handleLogin}
+          color="blue"
+        >
           Sign In
         </Menu.Item>
       )

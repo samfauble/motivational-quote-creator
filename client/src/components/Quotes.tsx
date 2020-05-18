@@ -4,7 +4,7 @@ import update from 'immutability-helper'
 import * as React from 'react'
 import {
   Button,
-  Checkbox,
+  Segment,
   Divider,
   Grid,
   Header,
@@ -191,31 +191,31 @@ export class Quotes extends React.PureComponent<QuotesProps, QuotesState> {
         {this.state.quotes.map((quote, pos) => {
           return (
             <Grid.Row key={quote.quoteId}>
-              <Grid.Column width={1} verticalAlign="middle">
-                {
-                quote.like ? 
-                <Icon name="heart" color="pink" size="big"                
-                  onClick={() => this.onQuoteCheck(pos)}/> : 
-                <Icon name="heart outline" color="pink" size="big"   
-                  onClick={() => this.onQuoteCheck(pos)}/>
+              <div className="container">
+                {quote.attachmentUrl && (
+                  <Image id="quoteImage" src={quote.attachmentUrl} 
+                    size="massive" 
+                    wrapped fluid bordered />
+                )}
+                <Segment className="quoteSegment" raised>
+                  {quote.quoteBody + "  - " + quote.author}
+                </Segment>
+              </div>
+              <Grid.Column width={1} floated="right" verticalAlign="middle">
+                  {
+                    quote.like ? 
+                    <Icon name="heart" color="pink" size="big"                
+                      onClick={() => this.onQuoteCheck(pos)}/> : 
+                    <Icon name="heart outline" color="pink" size="big"   
+                      onClick={() => this.onQuoteCheck(pos)}/>
                   }
-              </Grid.Column>
-              <Grid.Column width={10} verticalAlign="middle">
-                {quote.quoteBody}
-              </Grid.Column>
-              <Grid.Column width={3} floated="right">
-                {quote.author}
-              </Grid.Column>
-              <Grid.Column width={1} floated="right">
                 <Button
                   icon
                   color="blue"
                   onClick={() => this.onEditButtonClick(quote.quoteId)}
                 >
-                  <Icon name="pencil" />
+                  <Icon name="edit outline" />
                 </Button>
-              </Grid.Column>
-              <Grid.Column width={1} floated="right">
                 <Button
                   icon
                   className="deleteTest"
@@ -225,9 +225,6 @@ export class Quotes extends React.PureComponent<QuotesProps, QuotesState> {
                   <Icon name="delete" />
                 </Button>
               </Grid.Column>
-              {quote.attachmentUrl && (
-                <Image src={quote.attachmentUrl} size="small" wrapped />
-              )}
               <Grid.Column width={16}>
                 <Divider />
               </Grid.Column>
