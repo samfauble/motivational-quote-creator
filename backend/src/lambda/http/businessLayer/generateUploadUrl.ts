@@ -5,7 +5,7 @@ import { signURL } from "../dataLayer/generateUrl"
 import { dbAttachmentUrlUpdate } from "../dataLayer/updateData"
 import { getUserId } from "../userIdFromAuth"
 
-const bucket = process.env.TODOS_BUCKET
+const bucket = process.env.QUOTES_BUCKET
 const urlExpiration = process.env.URL_EXPIRATION_TIME
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {

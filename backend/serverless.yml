@@ -27,7 +27,7 @@ provider:
 
   environment:
     QUOTES_TABLE: exampleDB
-    QUOTES_BUCKET: quotesBucket
+    QUOTES_BUCKET: motivationalquotesforeachandeverybucket
     INDEX_NAME: quotesToday
     URL_EXPIRATION_TIME: 300
     AUTH_0_SECRET: process.env.AUTH_0_SECRET
@@ -40,7 +40,7 @@ custom: ${file(./custom.json)}
 functions:
 
   Auth:
-    name: "Auth"
+    name: "auth"
     handler: src/lambda/auth/auth0Authorizer.handler
 
   GetQuotes:
