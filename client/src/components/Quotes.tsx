@@ -14,91 +14,91 @@ import {
   Loader
 } from 'semantic-ui-react'
 
-import { createTodo, deleteTodo, getTodos, patchTodo } from '../api/todos-api'
+import { createQuote, deleteQuote, getQuotes, patchQuote } from '../api/quotes-api'
 import Auth from '../auth/Auth'
-import { Todo } from '../types/Todo'
+import { Quote } from '../types/Quote'
 
-interface TodosProps {
+interface QuotesProps {
   auth: Auth
   history: History
 }
 
-interface TodosState {
-  todos: Todo[]
-  newTodoName: string
-  loadingTodos: boolean
+interface QuotesState {
+  quotes: Quote[]
+  newQuoteName: string
+  loadingQuotes: boolean
 }
 
-export class Todos extends React.PureComponent<TodosProps, TodosState> {
-  state: TodosState = {
-    todos: [],
-    newTodoName: '',
-    loadingTodos: true
+export class Quotes extends React.PureComponent<QuotesProps, QuotesState> {
+  state: QuotesState = {
+    quotes: [],
+    newQuoteName: '',
+    loadingQuotes: true
   }
 
   handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ newTodoName: event.target.value })
+    this.setState({ newQuoteName: event.target.value })
   }
 
-  onEditButtonClick = (todoId: string) => {
-    this.props.history.push(`/todos/${todoId}/edit`)
+  onEditButtonClick = (quoteId: string) => {
+    this.props.history.push(`/todos/${quoteId}/edit`)
   }
 
-  onTodoCreate = async (event: React.ChangeEvent<HTMLButtonElement>) => {
+  onQuoteCreate = async (event: React.ChangeEvent<HTMLButtonElement>) => {
     try {
-      const dueDate = this.calculateDueDate()
+      const author = this.calculateDueDate()
       const userId = JSON.stringify(this.props.auth.getIdToken()).substr(153, 10)
       console.log(userId)
-      const newTodo = await createTodo(this.props.auth.getIdToken(), {
-        name: this.state.newTodoName,
-        dueDate,
+      const newQuote = await createQuote(this.props.auth.getIdToken(), {
+        quoteBody: this.state.newQuoteName,
+        author,
         userId 
       })
       this.setState({
-        todos: [...this.state.todos, newTodo],
-        newTodoName: ''
+        quotes: [...this.state.quotes, newQuote],
+        newQuoteName: ''
       })
     } catch {
-      alert('Todo creation failed')
+      alert('Quote creation failed')
     }
   }
 
-  onTodoDelete = async (todoId: string) => {
+  onQuoteDelete = async (quoteId: string) => {
     try {
-      await deleteTodo(this.props.auth.getIdToken(), todoId)
+      await deleteQuote(this.props.auth.getIdToken(), quoteId)
       this.setState({
-        todos: this.state.todos.filter(todo => todo.todoId != todoId)
+        quotes: this.state.quotes.filter(quote => quote.quoteId != quoteId)
       })
     } catch {
-      alert('Todo deletion failed')
+      alert('Quote deletion failed')
     }
   }
 
-  onTodoCheck = async (pos: number) => {
+  onQuoteCheck = async (pos: number) => {
     try {
-      const todo = this.state.todos[pos]
-      await patchTodo(this.props.auth.getIdToken(), todo.todoId, {
-        name: todo.name,
-        dueDate: todo.dueDate,
-        done: !todo.done,
-        attachmentUrl: todo.attachmentUrl
+      const quote = this.state.quotes[pos]
+      await patchQuote(this.props.auth.getIdToken(), quote.quoteId, {
+        quoteBody: quote.quoteBody,
+        author: quote.author,
+        like: !quote.like,
+        attachmentUrl: quote.attachmentUrl
       })
       this.setState({
-        todos: update(this.state.todos, {
-          [pos]: { done: { $set: !todo.done } }
+        quotes: update(this.state.quotes, {
+          [pos]: { like: { $set: !quote.like } }
         })
       })
     } catch {
-      alert('Todo deletion failed')
+      alert('Quote deletion failed')
     }
   }
 
   async componentDidMount() {
     try {
-      const todos = await getTodos(this.props.auth.getIdToken())
+      const quotes = await getQuotes(this.props.auth.getIdToken())
       this.setState({
-        todos,
-        loadingTodos: false
+        quotes,
+        loadingQuotes: false
       })
     } catch (e) {
       alert(`Failed to fetch todos: ${e.message}`)
@@ -108,16 +108,16 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
   render() {
     return (
       <div>
-        <Header as="h1">TODOs</Header>
+        <Header as="h1">Quotes</Header>
 
-        {this.renderCreateTodoInput()}
+        {this.renderCreateQuoteInput()}
 
-        {this.renderTodos()}
+        {this.renderQuotes()}
       </div>
     )
   }
 
-  renderCreateTodoInput() {
+  renderCreateQuoteInput() {
     return (
       <Grid.Row>
         <Grid.Column width={16}>
@@ -127,12 +127,12 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
               color: 'teal',
               labelPosition: 'left',
               icon: 'add',
-              content: 'New task',
-              onClick: this.onTodoCreate
+              content: 'New quote',
+              onClick: this.onQuoteCreate
             }}
             fluid
             actionPosition="left"
-            placeholder="To change the world..."
+            placeholder="Be the change you see in the world."
             onChange={this.handleNameChange}
           />
         </Grid.Column>
@@ -143,47 +143,47 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
     )
   }
 
-  renderTodos() {
-    if (this.state.loadingTodos) {
+  renderQuotes() {
+    if (this.state.loadingQuotes) {
       return this.renderLoading()
     }
 
-    return this.renderTodosList()
+    return this.renderQuotesList()
   }
 
   renderLoading() {
     return (
       <Grid.Row>
         <Loader indeterminate active inline="centered">
-          Loading TODOs
+          Loading Quotes
         </Loader>
       </Grid.Row>
     )
   }
 
-  renderTodosList() {
+  renderQuotesList() {
     return (
       <Grid className="gridTest" padded>
-        {this.state.todos.map((todo, pos) => {
+        {this.state.quotes.map((quote, pos) => {
           return (
-            <Grid.Row key={todo.todoId}>
+            <Grid.Row key={quote.quoteId}>
               <Grid.Column width={1} verticalAlign="middle">
                 <Checkbox
-                  onChange={() => this.onTodoCheck(pos)}
-                  checked={todo.done}
+                  onChange={() => this.onQuoteCheck(pos)}
+                  checked={quote.like}
                 />
               </Grid.Column>
               <Grid.Column width={10} verticalAlign="middle">
-                {todo.name}
+                {quote.quoteBody}
               </Grid.Column>
               <Grid.Column width={3} floated="right">
-                {todo.dueDate}
+                {quote.author}
               </Grid.Column>
               <Grid.Column width={1} floated="right">
                 <Button
                   icon
                   color="blue"
-                  onClick={() => this.onEditButtonClick(todo.todoId)}
+                  onClick={() => this.onEditButtonClick(quote.quoteId)}
                 >
                   <Icon name="pencil" />
                 </Button>
@@ -193,13 +193,13 @@ export class Todos extends React.PureComponent<TodosProps, TodosState> {
                   icon
                   className="deleteTest"
                   color="red"
-                  onClick={() => this.onTodoDelete(todo.todoId)}
+                  onClick={() => this.onQuoteDelete(quote.quoteId)}
                 >
                   <Icon name="delete" />
                 </Button>
               </Grid.Column>
-              {todo.attachmentUrl && (
-                <Image src={todo.attachmentUrl} size="small" wrapped />
+              {quote.attachmentUrl && (
+                <Image src={quote.attachmentUrl} size="small" wrapped />
               )}
               <Grid.Column width={16}>
                 <Divider />
