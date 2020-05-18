@@ -12,28 +12,28 @@ beforeAll(()=>{
 
 describe("Quotes", () => {
 
-    const todoProps = {
-        todos: [],
+    const quoteProps = {
+        quotes: [],
         newQuoteName: '',
         loadingQuotes: false
       }
 
 
-    const todoAuth = new Auth("123")
-/*
-    test("New Quote button creates a new todo item", () => {   
-        const wrapper = mount(<Quotes />, {{...todoProps} auth={todoAuth}});    
+    const quoteAuth = new Auth("123")
+
+    test("New Quote button creates a new quote item", () => {   
+        const wrapper = mount(<Quotes />, {...quoteProps}, auth={quoteAuth});    
         const grid = wrapper.find(".gridTest")                      // Quote grid
         const button = wrapper.find("Input.buttonTest")             // New Quote buttom
         button.simulate("click", {target: {action}})                // simulate a click event
-        expect(wrapper.state("todos").length).toEqual(1)
+        expect(wrapper.state("quotes").length).toEqual(1)
     })
-*/
+
     test("Grid starts with 0 Quotes", () => {
         const wrapper = shallow(<Quotes />)
-        expect(wrapper.state("todos").length).toEqual(0)
+        expect(wrapper.state("quotes").length).toEqual(0)
     })
-/*
+
     test("Delete button should remove 1 item", ()=> {
         const wrapper = shallow(<Quotes />);
         const deleteTest = wrapper.find(".deleteTest")
@@ -44,5 +44,4 @@ describe("Quotes", () => {
         deleteTest.simulate("click")
         expect(grid.children.length).toEqual(0)
     })
-*/
 })
