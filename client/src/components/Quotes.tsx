@@ -11,7 +11,8 @@ import {
   Icon,
   Input,
   Image,
-  Loader
+  Loader,
+  Form
 } from 'semantic-ui-react'
 
 import { createQuote, deleteQuote, getQuotes, patchQuote } from '../api/quotes-api'
@@ -25,38 +26,44 @@ interface QuotesProps {
 
 interface QuotesState {
   quotes: Quote[]
-  newQuoteName: string
+  newQuoteBody: string
+  newQuoteAuthor: string
   loadingQuotes: boolean
 }
 
 export class Quotes extends React.PureComponent<QuotesProps, QuotesState> {
   state: QuotesState = {
     quotes: [],
-    newQuoteName: '',
+    newQuoteBody: '',
+    newQuoteAuthor: '',
     loadingQuotes: true
   }
 
-  handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    this.setState({ newQuoteName: event.target.value })
+  handleQuoteChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ newQuoteBody: event.target.value })
+  }
+
+  handleAuthorChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    this.setState({ newQuoteAuthor: event.target.value })
   }
 
   onEditButtonClick = (quoteId: string) => {
-    this.props.history.push(`/todos/${quoteId}/edit`)
+    this.props.history.push(`/quotes/${quoteId}/edit`)
   }
 
-  onQuoteCreate = async (event: React.ChangeEvent<HTMLButtonElement>) => {
+  onQuoteCreate = async (event: React.MouseEvent<HTMLButtonElement>) => {
     try {
-      const author = this.calculateDueDate()
       const userId = JSON.stringify(this.props.auth.getIdToken()).substr(153, 10)
       console.log(userId)
       const newQuote = await createQuote(this.props.auth.getIdToken(), {
-        quoteBody: this.state.newQuoteName,
-        author,
+        quoteBody: this.state.newQuoteBody,
+        author: this.state.newQuoteAuthor,
         userId 
       })
       this.setState({
         quotes: [...this.state.quotes, newQuote],
-        newQuoteName: ''
+        newQuoteBody: '',
+        newQuoteAuthor: ''
       })
     } catch {
       alert('Quote creation failed')
@@ -101,7 +108,7 @@ export class Quotes extends React.PureComponent<QuotesProps, QuotesState> {
         loadingQuotes: false
       })
     } catch (e) {
-      alert(`Failed to fetch todos: ${e.message}`)
+      alert(`Failed to fetch quotes: ${e.message}`)
     }
   }
 
@@ -121,20 +128,37 @@ export class Quotes extends React.PureComponent<QuotesProps, QuotesState> {
     return (
       <Grid.Row>
         <Grid.Column width={16}>
-          <Input
-            className="buttonTest"
-            action={{
-              color: 'teal',
-              labelPosition: 'left',
-              icon: 'add',
-              content: 'New quote',
-              onClick: this.onQuoteCreate
-            }}
-            fluid
-            actionPosition="left"
-            placeholder="Be the change you see in the world."
-            onChange={this.handleNameChange}
-          />
+          <Form>
+            <Form.Field>
+              <label>Quote</label>
+              <Input placeholder="Be the change you see in the world" 
+                onChange={this.handleQuoteChange}
+                fluid />
+            </Form.Field>
+            <Form.Field>
+              <label>Author</label>
+              <Input placeholder="Thomas Edison" 
+                onChange={this.handleAuthorChange}
+                fluid />
+            </Form.Field>
+            {
+              this.state.newQuoteAuthor != '' && 
+              this.state.newQuoteBody != ''
+              ? 
+              <Button 
+              onClick={this.onQuoteCreate}
+              size="medium"
+              color="violet">
+                Submit
+              </Button>
+              : 
+              <Button
+              disabled
+              size="medium">
+                Submit
+              </Button>
+            }
+          </Form>
         </Grid.Column>
         <Grid.Column width={16}>
           <Divider />
@@ -168,10 +192,13 @@ export class Quotes extends React.PureComponent<QuotesProps, QuotesState> {
           return (
             <Grid.Row key={quote.quoteId}>
               <Grid.Column width={1} verticalAlign="middle">
-                <Checkbox
-                  onChange={() => this.onQuoteCheck(pos)}
-                  checked={quote.like}
-                />
+                {
+                quote.like ? 
+                <Icon name="heart" color="pink" size="big"                
+                  onClick={() => this.onQuoteCheck(pos)}/> : 
+                <Icon name="heart outline" color="pink" size="big"   
+                  onClick={() => this.onQuoteCheck(pos)}/>
+                  }
               </Grid.Column>
               <Grid.Column width={10} verticalAlign="middle">
                 {quote.quoteBody}
