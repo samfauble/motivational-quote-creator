@@ -1,31 +1,25 @@
 import 'source-map-support/register'
 import { APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda'
-import { CreateTodoRequest } from '../../../requests/CreateTodoRequest'
+import { CreateQuoteRequest } from '../../../requests/CreateQuoteRequest'
 import * as uuid from "uuid"
 import { logOperation, generalUseLogger } from "../../utils"
 import { dbHandlerPut } from "../dataLayer/putData"
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-  const newTodo: CreateTodoRequest = JSON.parse(event.body)
+  const newQuote: CreateQuoteRequest = JSON.parse(event.body)
   const itemId = uuid.v4()
-  generalUseLogger(newTodo)
-
-  const today = new Date();
-  const date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
-  const time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-  const dateTime = date+' '+time;
+  generalUseLogger(newQuote)
   
-  const todoToAdd = {
-    todoId: itemId,
-    createdAt: dateTime,
+  const quoteToAdd = {
+    quoteId: itemId,
     done: false,
-    ...newTodo
+    ...newQuote
   }
 
-  await dbHandlerPut(todoToAdd).then(() => {
-    logOperation(todoToAdd.userId, "create todo", true)
+  await dbHandlerPut(quoteToAdd).then(() => {
+    logOperation(quoteToAdd.userId, "create quote", true)
   }).catch(() => {
-    logOperation(todoToAdd, "create todo", false)
+    logOperation(quoteToAdd, "create quote", false)
   })
   
 
@@ -37,7 +31,7 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
       'Access-Control-Allow-Credentials': true
     },
     body: JSON.stringify({
-      todoToAdd
+      quoteToAdd
     })
   }
 }

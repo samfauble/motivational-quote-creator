@@ -6,11 +6,11 @@ import { getUserId } from "../userIdFromAuth"
 
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-    const todoId = event.pathParameters.todoId
+    const quoteId = event.pathParameters.quoteId
     const userId = getUserId(event)
 
-    await dbHandlerDelete(todoId, userId).catch(()=> {
-      logOperation(todoId, "delete todo", false)
+    await dbHandlerDelete(quoteId, userId).catch(()=> {
+      logOperation(quoteId, "delete quote", false)
     });
       
 

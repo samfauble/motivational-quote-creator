@@ -1,23 +1,23 @@
 import * as AWS from 'aws-sdk'
-import { UpdateTodoRequest } from '../../../requests/UpdateTodoRequest'
+import { UpdateQuoteRequest } from '../../../requests/UpdateQuoteRequest'
 
 const docClient = new AWS.DynamoDB.DocumentClient()
-const table = process.env.TODOS_TABLE
+const table = process.env.QUOTES_TABLE
 
 
-export const dbHandlerUpdate = async (userId:string, todoId: string, updatedTodo: UpdateTodoRequest) => {
+export const dbHandlerUpdate = async (userId:string, quoteId: string, updatedQuote: UpdateQuoteRequest) => {
     return await docClient.update({
       TableName: table,
-      Key: {userId, todoId},
-      ...updatedTodo,
+      Key: {userId, quoteId},
+      ...updatedQuote,
 
     }).promise()
   }
 
-export const dbAttachmentUrlUpdate = async (userId:string, todoId: string, attachmentUrl: string) => {
+export const dbAttachmentUrlUpdate = async (userId:string, quoteId: string, attachmentUrl: string) => {
   return await docClient.update({
     TableName: table,
-    Key: {userId, todoId},
+    Key: {userId, quoteId},
     UpdateExpression: "set attachmentUrl = :url",
     ExpressionAttributeValues: {
       ":url": attachmentUrl

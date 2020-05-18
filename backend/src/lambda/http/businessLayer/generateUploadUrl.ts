@@ -9,12 +9,12 @@ const bucket = process.env.TODOS_BUCKET
 const urlExpiration = process.env.URL_EXPIRATION_TIME
 
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
-  const todoId = event.pathParameters.todoId
+  const quoteId = event.pathParameters.quoteId
   const userId = getUserId(event)
 
   //get signed URL
   const num = parseInt(urlExpiration) 
-  const signedUrl = signURL(bucket, todoId, num)
+  const signedUrl = signURL(bucket, quoteId, num)
 
   if (!signedUrl) {
     logOperation({signedUrl}, "signing url", false)
@@ -22,16 +22,16 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     logOperation({signedUrl}, "signing url", true)
   }
 
-  const attachmentUrl = `https://${bucket}.s3.amazonaws.com/${todoId}`
+  const attachmentUrl = `https://${bucket}.s3.amazonaws.com/${quoteId}`
 
-  await dbAttachmentUrlUpdate(userId, todoId, attachmentUrl).then(()=>{
+  await dbAttachmentUrlUpdate(userId, quoteId, attachmentUrl).then(()=>{
     generalUseLogger("Success in updating signed url!!!")
   }).catch((err)=> {
     logOperation(err, "update signed url", false)
   })
   
 
-  // TODO: Return a presigned URL to upload a file for a TODO item with the provided id
+  // TODO: Return a presigned URL to upload a file for a quote item with the provided id
   return {
     statusCode: 200,
     headers: {

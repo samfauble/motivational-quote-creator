@@ -1,14 +1,14 @@
 import * as AWS from 'aws-sdk'
 
 const docClient = new AWS.DynamoDB.DocumentClient()
-const table = process.env.TODOS_TABLE
+const table = process.env.QUOTES_TABLE
 
-export const oneTodoQuery = async (todoId: string) => {
+export const oneTodoQuery = async (quoteId: string) => {
     return await docClient.query({
         TableName: table,
-        KeyConditionExpression: 'todoId = :todoId',
+        KeyConditionExpression: 'quoteId = :quoteId',
         ExpressionAttributeValues: {
-            ':todoId': todoId
+            ':quoteId': quoteId
    }
     }).promise()
   }

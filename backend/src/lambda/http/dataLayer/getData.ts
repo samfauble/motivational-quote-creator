@@ -1,7 +1,7 @@
 import * as AWS from 'aws-sdk'
 
 const docClient = new AWS.DynamoDB.DocumentClient()
-const table = process.env.TODOS_TABLE
+const table = process.env.QUOTES_TABLE
 
 export const dbHandlerQuery = async (userId) => {
     return await docClient.query({

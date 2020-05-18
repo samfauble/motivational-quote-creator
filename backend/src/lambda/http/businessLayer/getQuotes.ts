@@ -13,9 +13,9 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
   generalUseLogger([JSON.stringify({items}), userId])
   
   if(!items) {
-    logOperation(items, "get todos", false)
+    logOperation(items, "get quotes", false)
   } else {
-    logOperation(items, "get todos", true)
+    logOperation(items, "get quotes", true)
   }
   
   return {
